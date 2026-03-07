@@ -7,8 +7,7 @@ LABEL org.opencontainers.image.licenses="MIT"
 # Set environment variables
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION 24
-ENV BUN_INSTALL /usr/local
-ENV PATH $BUN_INSTALL/bin:$PATH
+ENV PATH /usr/local/bin:$PATH
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -32,17 +31,14 @@ RUN mkdir -p $NVM_DIR && \
     # Link node/npm/npx to /usr/local/bin for global access
     NODE_PATH=$(. $NVM_DIR/nvm.sh && nvm which $NODE_VERSION) && \
     NODE_BIN_DIR=$(dirname $NODE_PATH) && \
-    for bin in $NODE_BIN_DIR/*; do ln -s $bin /usr/local/bin/$(basename $bin); done
+    for bin in $NODE_BIN_DIR/*; do ln -sf $bin /usr/local/bin/$(basename $bin); done
 
-# Install Bun globally
-RUN curl -fsSL https://bun.sh/install | bash -s -- --bin-dir /usr/local/bin
-
-# Install pnpm and OpenClaw via npm
+# Install pnpm, bun, and OpenClaw via npm (more reliable in Docker)
 ARG OPENCLAW_VERSION=latest
 RUN if [ "$OPENCLAW_VERSION" = "main" ] || [ -z "$OPENCLAW_VERSION" ]; then \
-      npm install -g pnpm openclaw@latest; \
+      npm install -g pnpm bun openclaw@latest; \
     else \
-      npm install -g pnpm openclaw@${OPENCLAW_VERSION}; \
+      npm install -g pnpm bun openclaw@${OPENCLAW_VERSION}; \
     fi
 
 # Install Homebrew (required for first-party skills)
@@ -72,7 +68,6 @@ USER node
 WORKDIR /home/node
 
 ENV NODE_ENV=production
-# Global bins are already linked to /usr/local/bin, so we just ensure /usr/local/bin is in PATH
 ENV PATH="/usr/local/bin:${PATH}"
 
 # Default command
