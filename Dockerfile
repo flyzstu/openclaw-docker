@@ -58,13 +58,8 @@ RUN if [ "$OPENCLAW_VERSION" = "main" ] || [ -z "$OPENCLAW_VERSION" ]; then \
 RUN useradd -m -s /bin/bash linuxbrew && \
     echo 'linuxbrew ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
     mkdir -p /home/linuxbrew/.linuxbrew && \
-    chown -R linuxbrew:linuxbrew /home/linuxbrew/.linuxbrew
-RUN mkdir -p /home/linuxbrew/.linuxbrew/Homebrew && \
-    git clone --depth 1 https://github.com/Homebrew/brew /home/linuxbrew/.linuxbrew/Homebrew && \
     chown -R linuxbrew:linuxbrew /home/linuxbrew/.linuxbrew && \
-    ln -s /home/linuxbrew/.linuxbrew/Homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew || true && \
-    mkdir -p /home/linuxbrew/.linuxbrew/bin && \
-    ln -s /home/linuxbrew/.linuxbrew/Homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew
+    su linuxbrew -c 'curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash'
 
 # Set up Homebrew environment
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}"
