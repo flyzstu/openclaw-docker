@@ -4,7 +4,7 @@ services:
       context: .
       args:
         - OPENCLAW_VERSION=main
-    image: ghcr.io/phioranex/openclaw-docker:latest
+    image: ghcr.io/flyzstu/openclaw-docker:latest
     container_name: openclaw-gateway
     restart: unless-stopped
     stdin_open: true
@@ -21,25 +21,16 @@ services:
       - NODE_ENV=production
       - OPENCLAW_SKIP_SERVICE_CHECK=true
     command: ["gateway"]
-  
-  socat-proxy:
-    image: alpine/socat
-    container_name: openclaw-socat
-    restart: unless-stopped
-    network_mode: "service:openclaw-gateway"
-    command: "TCP-LISTEN:18790,fork,bind=0.0.0.0,reuseaddr TCP:127.0.0.1:18789"
 
   openclaw-cli:
     build:
       context: .
       args:
         - OPENCLAW_VERSION=main
-    image: ghcr.io/phioranex/openclaw-docker:latest
+    image: ghcr.io/flyzstu/openclaw-docker:latest
     container_name: openclaw-cli
     stdin_open: true
     tty: true
-    # 如果在 Synology NAS 或其他存在 UID/GID 权限问题的系统上运行，请取消注释下一行
-    # user: "1000:1000"
     volumes:
       - ~/.openclaw:/home/node/.openclaw
       - ~/.openclaw/workspace:/home/node/.openclaw/workspace
