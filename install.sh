@@ -4,10 +4,10 @@
 # One-command setup for OpenClaw on Docker
 #
 # Usage:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/phioranex/openclaw-docker/main/install.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/flyzstu/openclaw-docker/main/install.sh)
 #
 # Or with options:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/phioranex/openclaw-docker/main/install.sh) --no-start
+#   bash <(curl -fsSL https://raw.githubusercontent.com/flyzstu/openclaw-docker/main/install.sh) --no-start
 #
 
 set -e
@@ -23,9 +23,9 @@ NC='\033[0m' # No Color
 
 # Config
 INSTALL_DIR="${OPENCLAW_INSTALL_DIR:-$HOME/openclaw}"
-IMAGE="ghcr.io/phioranex/openclaw-docker:latest"
-REPO_URL="https://github.com/phioranex/openclaw-docker"
-COMPOSE_URL="https://raw.githubusercontent.com/phioranex/openclaw-docker/main/docker-compose.yml"
+IMAGE="ghcr.io/flyzstu/openclaw-docker:latest"
+REPO_URL="https://github.com/flyzstu/openclaw-docker"
+COMPOSE_URL="https://raw.githubusercontent.com/flyzstu/openclaw-docker/main/docker-compose.yml"
 
 # Detect if we have a TTY (for Docker interactive mode)
 if [ -t 0 ]; then
@@ -92,7 +92,7 @@ print_banner() {
     echo "║         | |                                                  ║"
     echo "║         |_|                                                  ║"
     echo "║                                                              ║"
-    echo "║              Docker Installer by Phioranex                   ║"
+    echo "║              Docker Installer by Flyzstu                   ║"
     echo "║                                                              ║"
     echo "╚══════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -180,7 +180,7 @@ if [ $DOCKER_INFO_EXIT -ne 0 ]; then
         echo -e "  ${CYAN}sudo usermod -aG docker \$USER${NC}"
         echo -e "  ${CYAN}(then log out and log back in)${NC}"
         echo -e "\n${YELLOW}Or run the installer with sudo:${NC}"
-        echo -e "  ${CYAN}sudo bash <(curl -fsSL https://raw.githubusercontent.com/phioranex/openclaw-docker/main/install.sh)${NC}"
+        echo -e "  ${CYAN}sudo bash <(curl -fsSL https://raw.githubusercontent.com/flyzstu/openclaw-docker/main/install.sh)${NC}"
     else
         echo -e "\n${RED}Please start Docker and try again.${NC}"
     fi

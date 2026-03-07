@@ -7,7 +7,7 @@ This project provides a pre-built and automated Docker packaging for [OpenClaw](
 - **Purpose**: Simplify the deployment and maintenance of OpenClaw using Docker.
 - **Main Technologies**:
   - **Docker & Docker Compose**: For containerization and service orchestration.
-  - **Node.js (v22)**: The runtime for OpenClaw.
+  - **Node.js (v24)**: The runtime for OpenClaw, managed via NVM.
   - **Bun & pnpm**: Used for building OpenClaw and managing dependencies.
   - **Homebrew**: Included in the image to support first-party OpenClaw skills.
   - **GitHub Actions**: Automates daily builds and tracks upstream releases.
@@ -23,8 +23,8 @@ The project defines two primary services in `docker-compose.yml`:
 
 ### Installation
 The project provides one-line installation scripts:
-- **Linux / macOS**: `bash <(curl -fsSL https://raw.githubusercontent.com/phioranex/openclaw-docker/main/install.sh)`
-- **Windows (PowerShell)**: `irm https://raw.githubusercontent.com/phioranex/openclaw-docker/main/install.ps1 | iex`
+- **Linux / macOS**: `bash <(curl -fsSL https://raw.githubusercontent.com/flyzstu/openclaw-docker/main/install.sh)`
+- **Windows (PowerShell)**: `irm https://raw.githubusercontent.com/flyzstu/openclaw-docker/main/install.ps1 | iex`
 
 ### Manual Commands
 - **Build Image Locally**:
@@ -51,8 +51,8 @@ The project provides one-line installation scripts:
 - **`openclaw-release-tracker.yml`**: Runs every 6 hours to check for new releases in the upstream [OpenClaw repository](https://github.com/openclaw/openclaw). If a new release is detected, it updates `.last-openclaw-version` and triggers `build-image.yml`.
 
 ### Key Files
-- `Dockerfile`: Multi-stage build that clones the latest OpenClaw, installs dependencies with `pnpm`, builds the UI and backend, and sets up a production-ready environment with Homebrew support.
-- `docker-compose.yml`: Defines the environment, volumes, and ports for running OpenClaw.
+- `Dockerfile`: Debian-based build that installs Node.js v24 (via NVM), Bun, and pnpm, then installs OpenClaw globally from npm. It also includes Homebrew for skill support.
+- `docker-compose.yml`: Defines the environment, volumes, and ports for running OpenClaw via `bunx`.
 - `install.sh` / `install.ps1`: Shell and PowerShell scripts that automate prerequisite checks, directory creation, and initial setup.
 - `.last-openclaw-version`: A state file used by the release tracker to avoid redundant builds.
 
