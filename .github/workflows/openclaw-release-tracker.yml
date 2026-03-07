@@ -71,7 +71,7 @@ jobs:
               workflow_id: 'build-image.yml',
               ref: 'main',
               inputs: {
-                openclaw_version: 'main',
+                openclaw_version: '${{ steps.check_release.outputs.latest_version }}',
                 push_image: 'true'
               }
             });

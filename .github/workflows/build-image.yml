@@ -62,9 +62,8 @@ jobs:
       - name: Determine OpenClaw version
         id: version
         run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            VERSION="${{ inputs.openclaw_version }}"
-          else
+          VERSION="${{ github.event.inputs.openclaw_version }}"
+          if [ -z "$VERSION" ]; then
             VERSION="main"
           fi
           echo "openclaw_version=${VERSION}" >> $GITHUB_OUTPUT
