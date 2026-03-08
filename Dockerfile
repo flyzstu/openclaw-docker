@@ -29,6 +29,11 @@ RUN useradd -m -s /bin/bash node && \
 RUN useradd -m -s /bin/bash linuxbrew && \
     echo "linuxbrew ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
+USER root
+RUN mkdir -p /home/linuxbrew/.linuxbrew && \
+    chown -R linuxbrew:linuxbrew /home/linuxbrew/.linuxbrew && \
+    su linuxbrew -c "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash"
+
 # Set environment variables for the build process
 ENV NVM_DIR /home/node/.nvm
 ENV NODE_VERSION 24
@@ -47,9 +52,8 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | b
     nvm use $NODE_VERSION && \
     nvm alias default $NODE_VERSION
 
-# 6. Install pnpm and Bun as node user
+# 6. Install Bun as node user
 RUN . $NVM_DIR/nvm.sh && \
-    npm install -g pnpm && \
     curl -fsSL https://bun.sh/install | bash
 
 # 7. Install OpenClaw via npm as node user
@@ -61,17 +65,8 @@ RUN . $NVM_DIR/nvm.sh && \
       npm install -g openclaw@${OPENCLAW_VERSION}; \
     fi
 
-# 8. Setup Homebrew (using linuxbrew user)
-USER root
-RUN mkdir -p /home/linuxbrew/.linuxbrew && \
-    chown -R linuxbrew:linuxbrew /home/linuxbrew/.linuxbrew
-RUN sudo -u linuxbrew bash -c "mkdir -p /home/linuxbrew/.linuxbrew/Homebrew && \
-    git clone --depth 1 https://github.com/Homebrew/brew /home/linuxbrew/.linuxbrew/Homebrew && \
-    mkdir -p /home/linuxbrew/.linuxbrew/bin && \
-    ln -s /home/linuxbrew/.linuxbrew/Homebrew/bin/brew /home/linuxbrew/.linuxbrew/bin/brew"
-
 # Final system preparation
-RUN mkdir -p /home/node/.openclaw /home/node/.openclaw/workspace && \
+RUN mkdir -p /home/node/.openclaw && \
     chown -R node:node /home/node/.openclaw
 
 # Switch back to node user for runtime
@@ -85,5 +80,5 @@ ENV HOMEBREW_NO_INSTALL_CLEANUP=1
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/node/.bun/bin:/home/node/.nvm/versions/node/v24/bin:${PATH}"
 
 # Default command
-ENTRYPOINT ["bunx", "openclaw"]
-CMD ["gateway"]
+ENTRYPOINT ["bunx", "openclaw", "gateway"]
+CMD ["run", "--verbose"]
