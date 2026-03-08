@@ -60,10 +60,12 @@ RUN . $NVM_DIR/nvm.sh && \
 ARG OPENCLAW_VERSION=latest
 RUN . $NVM_DIR/nvm.sh && \
     if [ "$OPENCLAW_VERSION" = "main" ] || [ -z "$OPENCLAW_VERSION" ]; then \
-      npm install -g openclaw@latest; \
+        bun add -g openclaw@latest; \
     else \
-      npm install -g openclaw@${OPENCLAW_VERSION}; \
-    fi
+        bun add -g openclaw@${OPENCLAW_VERSION}; \
+    fi && \
+    bun pm trust --all 
+
 
 # Final system preparation
 RUN mkdir -p /home/node/.openclaw && \
