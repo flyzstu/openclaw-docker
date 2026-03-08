@@ -79,6 +79,4 @@ ENV HOMEBREW_NO_AUTO_UPDATE=1
 ENV HOMEBREW_NO_INSTALL_CLEANUP=1
 ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/node/.bun/bin:/home/node/.nvm/versions/node/v24/bin:${PATH}"
 
-# Default command
-ENTRYPOINT ["bunx", "openclaw", "gateway"]
-CMD ["run", "--verbose"]
+CMD ["bunx", "openclaw", "gateway", "run", "--verbose"]
