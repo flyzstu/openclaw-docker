@@ -54,8 +54,7 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | b
         npm install -g openclaw@latest; \
     else \
         npm install -g openclaw@${OPENCLAW_VERSION}; \
-    fi \
-    && mkdir -p /home/node/.openclaw
+    fi
 
 # 4. Set runtime environment
 ENV NODE_ENV=production
