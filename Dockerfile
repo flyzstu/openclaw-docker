@@ -54,13 +54,20 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
     && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
     && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
     && git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions \
-    && git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
+    && git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search \
+    && git clone --depth 1 https://github.com/junegunn/fzf.git /tmp/fzf \
+    && mkdir -p /usr/share/doc/fzf/examples \
+    && cp /tmp/fzf/shell/*.zsh /usr/share/doc/fzf/examples/ \
+    && rm -rf /tmp/fzf
 
 # 5. Configure oh-my-zsh with plugins
-RUN sed -i 's/plugins=(git)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-completions zsh-history-substring-search fzf)/' ~/.zshrc \
+RUN sed -i 's/plugins=(git)/plugins=(zsh-completions zsh-syntax-highlighting zsh-autosuggestions zsh-history-substring-search fzf)/' ~/.zshrc \
+    && sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="half-life"/' ~/.zshrc \
     && echo 'export ZSH_HISTORY_SIZE=100000' >> ~/.zshrc \
     && echo 'setopt HIST_IGNORE_DUPS' >> ~/.zshrc \
-    && echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
+    && echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc \
+    && echo 'autoload -Uz compinit' >> ~/.zshrc \
+    && echo 'compinit' >> ~/.zshrc
 
 # 6. Set runtime environment
 ENV NODE_ENV=production
@@ -68,4 +75,4 @@ ENV NODE_ENV=production
 # Set default shell to zsh
 ENV SHELL=/bin/zsh
 
-CMD ["/bin/zsh", "-c", "source $NVM_DIR/nvm.sh && npx openclaw gateway run --verbose"]
+CMD ["/bin/zsh", "-c", ". ~/.zshrc; source $NVM_DIR/nvm.sh && npx openclaw gateway run --verbose"]
