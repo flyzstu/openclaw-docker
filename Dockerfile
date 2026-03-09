@@ -35,13 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && useradd -m -s /bin/zsh node \
     && echo "node ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    && useradd -m -s /bin/zsh linuxbrew \
-    && echo "linuxbrew ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    && mkdir -p /home/linuxbrew/.linuxbrew \
-    && chown -R linuxbrew:linuxbrew /home/linuxbrew/.linuxbrew \
-    && su linuxbrew -c "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash" \
-    && chmod -R a+rx /home/linuxbrew/.linuxbrew
-
+    && su node -c "curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh | bash"
 # 2. Switch to node user and setup Node.js + OpenClaw
 USER node
 WORKDIR /home/node
