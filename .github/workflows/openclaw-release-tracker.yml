@@ -20,13 +20,15 @@ jobs:
 
       - name: Check for new OpenClaw release
         id: check_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           # Get the latest release from OpenClaw repository
-          LATEST_RELEASE=$(curl -s https://api.github.com/repos/openclaw/openclaw/releases/latest | jq -r '.tag_name // empty')
+          LATEST_RELEASE=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/openclaw/openclaw/releases/latest | jq -r '.tag_name // empty')
           
           # Get the latest commit from main branch if no releases
           if [ -z "$LATEST_RELEASE" ]; then
-            LATEST_COMMIT=$(curl -s https://api.github.com/repos/openclaw/openclaw/commits/main | jq -r '.sha[:7]')
+            LATEST_COMMIT=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/openclaw/openclaw/commits/main | jq -r '.sha[:7]')
             LATEST_RELEASE="main-${LATEST_COMMIT}"
           fi
           

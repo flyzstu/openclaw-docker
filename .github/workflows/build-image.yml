@@ -41,7 +41,7 @@ jobs:
       - name: Determine OpenClaw version
         id: version
         run: |
-          VERSION="${{ github.event.inputs.openclaw_version }}"
+          VERSION="${{ inputs.openclaw_version || 'main' }}"
           if [ -z "$VERSION" ] || [ "$VERSION" = "main" ]; then
             # Try to get latest from npm if it's a generic run
             VERSION=$(curl -s https://registry.npmjs.org/openclaw/latest | jq -r .version)

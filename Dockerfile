@@ -57,13 +57,8 @@ RUN . $NVM_DIR/nvm.sh && \
     curl -fsSL https://bun.sh/install | bash
 
 # 7. Install OpenClaw via npm as node user
-ARG OPENCLAW_VERSION=latest
 RUN . $NVM_DIR/nvm.sh && \
-    if [ "$OPENCLAW_VERSION" = "main" ] || [ -z "$OPENCLAW_VERSION" ]; then \
-        bun add -g openclaw@latest; \
-    else \
-        bun add -g openclaw@${OPENCLAW_VERSION}; \
-    fi && \
+    bun add -g openclaw@latest && \
     bun pm trust --all 
 
 
