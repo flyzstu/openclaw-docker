@@ -44,17 +44,12 @@ USER node
 WORKDIR /home/node
 
 # 3. Install NVM, Node 24, and OpenClaw in a single layer
-ARG OPENCLAW_VERSION=latest
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
     && . $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
     && nvm use $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
-    && if [ "$OPENCLAW_VERSION" = "main" ] || [ -z "$OPENCLAW_VERSION" ]; then \
-        npm install -g openclaw@latest; \
-    else \
-        npm install -g openclaw@${OPENCLAW_VERSION}; \
-    fi
+    && npm install -g openclaw@latest
 
 # 4. Set runtime environment
 ENV NODE_ENV=production

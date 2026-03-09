@@ -79,11 +79,9 @@ jobs:
           push: ${{ (github.event_name != 'workflow_dispatch') || inputs.push_image }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            OPENCLAW_VERSION=${{ steps.version.outputs.openclaw_version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
 
       - name: Generate build summary
         run: |
