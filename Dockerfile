@@ -29,10 +29,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     file \
     sudo \
     jq \
+    zsh \
+    wget \
+    fzf \
     && rm -rf /var/lib/apt/lists/* \
-    && useradd -m -s /bin/bash node \
+    && useradd -m -s /bin/zsh node \
     && echo "node ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    && useradd -m -s /bin/bash linuxbrew \
+    && useradd -m -s /bin/zsh linuxbrew \
     && echo "linuxbrew ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
     && mkdir -p /home/linuxbrew/.linuxbrew \
     && chown -R linuxbrew:linuxbrew /home/linuxbrew/.linuxbrew \
@@ -44,14 +47,31 @@ USER node
 WORKDIR /home/node
 
 # 3. Install NVM, Node 24, and OpenClaw in a single layer
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash \
+RUN NVM_VERSION=$(curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1') \
+    && curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash \
     && . $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
     && nvm use $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
     && npm install -g openclaw@latest
 
-# 4. Set runtime environment
+# 4. Install oh-my-zsh and plugins
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting \
+    && git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
+    && git clone https://github.com/zsh-users/zsh-completions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-completions \
+    && git clone https://github.com/zsh-users/zsh-history-substring-search ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search
+
+# 5. Configure oh-my-zsh with plugins
+RUN sed -i 's/plugins=(git)/plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-completions zsh-history-substring-search fzf)/' ~/.zshrc \
+    && echo 'export ZSH_HISTORY_SIZE=100000' >> ~/.zshrc \
+    && echo 'setopt HIST_IGNORE_DUPS' >> ~/.zshrc \
+    && echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.zshrc
+
+# 6. Set runtime environment
 ENV NODE_ENV=production
 
-CMD ["npx", "openclaw", "gateway", "run", "--verbose"]
+# Set default shell to zsh
+ENV SHELL=/bin/zsh
+
+CMD ["/bin/zsh", "-c", "source $NVM_DIR/nvm.sh && npx openclaw gateway run --verbose"]
