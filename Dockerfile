@@ -47,7 +47,7 @@ USER node
 WORKDIR /home/node
 
 # 3. Install NVM, Node 24, and OpenClaw in a single layer
-RUN NVM_VERSION=$(curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1') \
+RUN NVM_VERSION=$(curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/nvm-sh/nvm/releases/latest | jq -r '.tag_name') \
     && curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh" | bash \
     && . $NVM_DIR/nvm.sh \
     && nvm install $NODE_VERSION \
