@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM python:3.12-slim-bookworm
 
 # Labels
 LABEL org.opencontainers.image.source="https://github.com/flyzstu/openclaw-docker"
@@ -46,7 +46,7 @@ RUN NVM_VERSION=$(curl -s https://api.github.com/repos/nvm-sh/nvm/releases/lates
     && nvm install $NODE_VERSION \
     && nvm use $NODE_VERSION \
     && nvm alias default $NODE_VERSION \
-    && npm install -g openclaw@latest
+    && npm install -g openclaw@latest @google/gemini-cli @openai/codex 
 
 # 4. Install oh-my-zsh and plugins
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
